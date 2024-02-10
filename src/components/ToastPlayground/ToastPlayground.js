@@ -63,8 +63,6 @@ function ToastPlayground() {
                 {variant}
               </label>
             ))}
-
-            {/* TODO Other Variant radio buttons here */}
           </div>
         </div>
 
