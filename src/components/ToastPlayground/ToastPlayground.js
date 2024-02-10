@@ -1,22 +1,18 @@
-import React, { createContext, useId, useRef, useState } from "react";
-import { generate } from "random-words";
+import React, { useContext, useId, useRef, useState } from "react";
 
 import Button from "../Button";
-import ToastShelf from "../ToastShelf";
+import { ToastContext } from "../ToastProvider";
 
 import styles from "./ToastPlayground.module.css";
 
-const VARIANT_OPTIONS = ["notice", "warning", "success", "error"];
-
-export const DismissContext = createContext();
-
 function ToastPlayground() {
+  const { addToast, VARIANT_OPTIONS, getRandomToast } =
+    useContext(ToastContext);
+
   const [message, setMessage] = useState("");
   const [selectedVariant, setSelectedVariant] = useState(VARIANT_OPTIONS[0]);
 
   const inputRef = useRef();
-
-  const { toasts, addToast, dismissToast } = useToasts([]);
 
   function pushToast() {
     addToast(message, selectedVariant);
@@ -28,10 +24,6 @@ function ToastPlayground() {
   return (
     <div className={styles.wrapper}>
       <Header />
-
-      <DismissContext.Provider value={dismissToast}>
-        <ToastShelf items={toasts} />
-      </DismissContext.Provider>
 
       <form
         className={styles.controlsWrapper}
@@ -89,22 +81,7 @@ function ToastPlayground() {
           <div className={styles.label} />
           <div className={`${styles.inputWrapper} ${styles.radioWrapper}`}>
             <Button onClick={pushToast}>Pop Toast!</Button>
-            <Button
-              onClick={() => {
-                const message = generate({ exactly: 5, minLength: 5 }).join(
-                  " "
-                );
-
-                const variant =
-                  VARIANT_OPTIONS[
-                    Math.floor(Math.random() * VARIANT_OPTIONS.length)
-                  ];
-
-                addToast(message, variant);
-              }}
-            >
-              Add Random Toast!
-            </Button>
+            <Button onClick={getRandomToast}>Add Random Toast!</Button>
           </div>
         </div>
       </form>
@@ -129,22 +106,6 @@ function useToggle(defaultState) {
   }
 
   return [value, toggleState];
-}
-
-function useToasts() {
-  const [toasts, setToasts] = useState([]);
-
-  function addToast(message = "", variant = VARIANT_OPTIONS[0]) {
-    const generatedId = crypto.randomUUID();
-
-    setToasts([...toasts, { message, variant, id: generatedId }]);
-  }
-
-  function dismissToast(id) {
-    setToasts([...toasts.filter((item) => item.id !== id)]);
-  }
-
-  return { toasts, addToast, dismissToast };
 }
 
 export default ToastPlayground;

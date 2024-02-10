@@ -7,11 +7,10 @@ import {
   X,
 } from "react-feather";
 
-import { DismissContext } from "../ToastPlayground/ToastPlayground";
-
 import VisuallyHidden from "../VisuallyHidden";
 
 import styles from "./Toast.module.css";
+import { ToastContext } from "../ToastProvider";
 
 const ICONS_BY_VARIANT = {
   notice: Info,
@@ -22,7 +21,7 @@ const ICONS_BY_VARIANT = {
 
 function Toast({ variant = "notice", children, id }) {
   const SelectedIcon = ICONS_BY_VARIANT[variant];
-  const dismiss = useContext(DismissContext);
+  const { dismissToast: dismiss } = useContext(ToastContext);
 
   return (
     <div className={`${styles.toast} ${styles[variant]}`}>
