@@ -15,7 +15,7 @@ function ToastProvider({ children }) {
     }
 
     function handleEscape(e) {
-      if (!e.code === "Escape") return;
+      if (e.key !== "Escape") return;
       dismissAllToasts();
     }
 
