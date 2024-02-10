@@ -1,4 +1,5 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useId, useRef, useState } from "react";
+import { generate } from "random-words";
 
 import Button from "../Button";
 import ToastShelf from "../ToastShelf";
@@ -76,6 +77,22 @@ function ToastPlayground() {
               }}
             >
               Pop Toast!
+            </Button>
+            <Button
+              onClick={() => {
+                const message = generate({ exactly: 5, minLength: 5 }).join(
+                  " "
+                );
+
+                const variant =
+                  VARIANT_OPTIONS[
+                    Math.floor(Math.random() * VARIANT_OPTIONS.length)
+                  ];
+
+                addToast(message, variant);
+              }}
+            >
+              Add Random Toast!
             </Button>
           </div>
         </div>
