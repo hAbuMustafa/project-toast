@@ -14,7 +14,16 @@ function ToastPlayground() {
   const [message, setMessage] = useState("");
   const [selectedVariant, setSelectedVariant] = useState(VARIANT_OPTIONS[0]);
 
+  const inputRef = useRef();
+
   const { toasts, addToast, dismissToast } = useToasts([]);
+
+  function pushToast() {
+    addToast(message, selectedVariant);
+    setSelectedVariant(VARIANT_OPTIONS[0]);
+    setMessage("");
+    inputRef.current.focus();
+  }
 
   return (
     <div className={styles.wrapper}>
@@ -24,7 +33,16 @@ function ToastPlayground() {
         <ToastShelf items={toasts} />
       </DismissContext.Provider>
 
-      <div className={styles.controlsWrapper}>
+      <form
+        className={styles.controlsWrapper}
+        onSubmit={(e) => {
+          e.preventDefault();
+        }}
+        onKeyDown={(e) => {
+          if (!(e.key === "Enter" && e.ctrlKey)) return;
+          pushToast();
+        }}
+      >
         <div className={styles.row}>
           <label
             htmlFor="message"
@@ -36,6 +54,7 @@ function ToastPlayground() {
           <div className={styles.inputWrapper}>
             <textarea
               id="message"
+              ref={inputRef}
               className={styles.messageInput}
               value={message}
               onChange={(e) => {
@@ -69,15 +88,7 @@ function ToastPlayground() {
         <div className={styles.row}>
           <div className={styles.label} />
           <div className={`${styles.inputWrapper} ${styles.radioWrapper}`}>
-            <Button
-              onClick={() => {
-                addToast(message, selectedVariant);
-                setSelectedVariant(VARIANT_OPTIONS[0]);
-                setMessage("");
-              }}
-            >
-              Pop Toast!
-            </Button>
+            <Button onClick={pushToast}>Pop Toast!</Button>
             <Button
               onClick={() => {
                 const message = generate({ exactly: 5, minLength: 5 }).join(
@@ -96,7 +107,7 @@ function ToastPlayground() {
             </Button>
           </div>
         </div>
-      </div>
+      </form>
     </div>
   );
 }
