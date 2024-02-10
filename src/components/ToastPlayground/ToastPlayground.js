@@ -1,4 +1,4 @@
-import React, { useContext, useId, useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 
 import Button from "../Button";
 import { ToastContext } from "../ToastProvider";
@@ -96,16 +96,6 @@ function Header() {
       <h1>Toast Playground</h1>
     </header>
   );
-}
-
-function useToggle(defaultState) {
-  const [value, setValue] = useState(defaultState);
-
-  function toggleState() {
-    setValue((currentValue) => !currentValue);
-  }
-
-  return [value, toggleState];
 }
 
 export default ToastPlayground;
