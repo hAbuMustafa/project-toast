@@ -1,28 +1,27 @@
-import React, { useState } from "react";
+import React, { createContext, useState } from "react";
 
 import Button from "../Button";
-import Toast from "../Toast";
+import ToastShelf from "../ToastShelf";
 
 import styles from "./ToastPlayground.module.css";
 
 const VARIANT_OPTIONS = ["notice", "warning", "success", "error"];
 
+export const DismissContext = createContext();
+
 function ToastPlayground() {
   const [message, setMessage] = useState("");
-  const [toastVisible, toggleToastVisibility] = useToggle(false);
   const [selectedVariant, setSelectedVariant] = useState(VARIANT_OPTIONS[0]);
+
+  const { toasts, addToast, dismissToast } = useToasts([]);
 
   return (
     <div className={styles.wrapper}>
       <Header />
 
-      {toastVisible && (
-        <Toast
-          variant={selectedVariant}
-          message={message}
-          dismiss={toggleToastVisibility}
-        />
-      )}
+      <DismissContext.Provider value={dismissToast}>
+        <ToastShelf items={toasts} />
+      </DismissContext.Provider>
 
       <div className={styles.controlsWrapper}>
         <div className={styles.row}>
@@ -71,7 +70,13 @@ function ToastPlayground() {
         <div className={styles.row}>
           <div className={styles.label} />
           <div className={`${styles.inputWrapper} ${styles.radioWrapper}`}>
-            <Button onClick={toggleToastVisibility}>Pop Toast!</Button>
+            <Button
+              onClick={() => {
+                addToast(message, selectedVariant);
+              }}
+            >
+              Pop Toast!
+            </Button>
           </div>
         </div>
       </div>
@@ -96,6 +101,22 @@ function useToggle(defaultState) {
   }
 
   return [value, toggleState];
+}
+
+function useToasts() {
+  const [toasts, setToasts] = useState([]);
+
+  function addToast(message = "", variant = VARIANT_OPTIONS[0]) {
+    const generatedId = crypto.randomUUID();
+
+    setToasts([...toasts, { message, variant, id: generatedId }]);
+  }
+
+  function dismissToast(id) {
+    setToasts([...toasts.filter((item) => item.id !== id)]);
+  }
+
+  return { toasts, addToast, dismissToast };
 }
 
 export default ToastPlayground;
