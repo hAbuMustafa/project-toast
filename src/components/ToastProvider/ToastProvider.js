@@ -1,4 +1,4 @@
-import React, { useState, createContext } from "react";
+import React, { useState, createContext, useEffect } from "react";
 import { generate } from "random-words";
 
 export const ToastContext = createContext();
@@ -6,7 +6,25 @@ export const ToastContext = createContext();
 const VARIANT_OPTIONS = ["notice", "warning", "success", "error"];
 
 function ToastProvider({ children }) {
-  const { toasts, addToast, dismissToast, getRandomToast } = useToasts([]);
+  const { toasts, addToast, dismissToast, setToasts, getRandomToast } =
+    useToasts([]);
+
+  useEffect(() => {
+    function dismissAllToasts() {
+      setToasts([]);
+    }
+
+    function handleEscape(e) {
+      if (!e.code === "Escape") return;
+      dismissAllToasts();
+    }
+
+    window.addEventListener("keydown", handleEscape);
+
+    return () => {
+      window.removeEventListener("keydown", handleEscape);
+    };
+  }, []);
 
   return (
     <ToastContext.Provider
@@ -45,7 +63,7 @@ function useToasts() {
     addToast(message, variant);
   }
 
-  return { toasts, addToast, dismissToast, getRandomToast };
+  return { toasts, addToast, dismissToast, setToasts, getRandomToast };
 }
 
 export default ToastProvider;
