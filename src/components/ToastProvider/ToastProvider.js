@@ -1,5 +1,6 @@
 import React, { useState, createContext, useEffect } from "react";
 import { generate } from "random-words";
+import useEscape from "../../hooks/useEscape";
 
 export const ToastContext = createContext();
 
@@ -9,22 +10,9 @@ function ToastProvider({ children }) {
   const { toasts, addToast, dismissToast, setToasts, getRandomToast } =
     useToasts([]);
 
-  useEffect(() => {
-    function dismissAllToasts() {
-      setToasts([]);
-    }
-
-    function handleEscape(e) {
-      if (e.key !== "Escape") return;
-      dismissAllToasts();
-    }
-
-    window.addEventListener("keydown", handleEscape);
-
-    return () => {
-      window.removeEventListener("keydown", handleEscape);
-    };
-  }, []);
+  useEscape(() => {
+    setToasts([]);
+  });
 
   return (
     <ToastContext.Provider
