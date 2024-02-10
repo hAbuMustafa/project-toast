@@ -72,6 +72,8 @@ function ToastPlayground() {
             <Button
               onClick={() => {
                 addToast(message, selectedVariant);
+                setSelectedVariant(VARIANT_OPTIONS[0]);
+                setMessage("");
               }}
             >
               Pop Toast!
