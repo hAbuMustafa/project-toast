@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { memo, useContext } from "react";
 import {
   AlertOctagon,
   AlertTriangle,
@@ -38,4 +38,4 @@ function Toast({ variant = "notice", children, id }) {
   );
 }
 
-export default Toast;
+export default memo(Toast);
